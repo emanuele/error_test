@@ -1,5 +1,16 @@
 import numpy as np
 from numpy.random import multinomial, dirichlet
+from scipy.special import gamma
+
+def multinomial_pmf(x, p):
+    """Compute the multinomial probability mass function (pmf), aka
+    likelihood. Naive implementation.
+
+    See: http://en.wikipedia.org/wiki/Multinomial_distribution#Probability_mass_function
+    """
+    return gamma(x.sum() + 1.0) / gamma(x + 1).sum() * (p ** x).prod()
+    
+    
 
 if __name__ == '__main__':
 
@@ -42,7 +53,7 @@ if __name__ == '__main__':
     C1 = C1[np.eye(n_classes)==0].reshape(n_classes, n_classes-1)
     C2 = C2[np.eye(n_classes)==0].reshape(n_classes, n_classes-1)
 
-    iterations = 5000000
+    iterations = 50000
 
     counter_H1 = 0
     counter_H2 = 0
@@ -65,3 +76,43 @@ if __name__ == '__main__':
 
     print "counter_H1:", counter_H1
     print "counter_H2:", counter_H2
+
+    p_C1C2_given_H1 = counter_H1 / float(iterations)
+    p_C1C2_given_H2 = counter_H2 / float(iterations)
+    print "Approximate p(C1,C2 | H1):", p_C1C2_given_H1
+    print "Approximate p(C1,C2 | H2):", p_C1C2_given_H2    
+
+    print
+    print "Now, a faster implementation based on multinomial_pmf()."
+
+    p_C1C2_given_H1 = 0.0
+    p_C1C2_given_H2 = 0.0
+    for i in range(iterations):
+        theta = dirichlet(alpha, size=n_classes)
+        tmp = np.prod([multinomial_pmf(total1[j], theta[j]) for j in range(n_classes)])
+        tmp *= np.prod([multinomial_pmf(total2[j], theta[j]) for j in range(n_classes)])
+        p_C1C2_given_H1 += tmp
+
+        theta1 = dirichlet(alpha, size=n_classes)
+        theta2 = dirichlet(alpha, size=n_classes)
+        tmp = np.prod([multinomial_pmf(total1[j], theta1[j]) for j in range(n_classes)])
+        tmp *= np.prod([multinomial_pmf(total2[j], theta2[j]) for j in range(n_classes)])
+        p_C1C2_given_H2 += tmp
+
+        
+    p_C1C2_given_H1 = p_C1C2_given_H1 / float(iterations)
+    p_C1C2_given_H2 = p_C1C2_given_H2 / float(iterations)
+    print "Approximate p(C1,C2 | H1):", p_C1C2_given_H1
+    print "Approximate p(C1,C2 | H2):", p_C1C2_given_H2    
+    print "Bayes factor 1/2 :", p_C1C2_given_H1 / p_C1C2_given_H2
+    print "Bayes factor 2/1 :", p_C1C2_given_H2 / p_C1C2_given_H1    
+
+
+
+
+
+
+
+
+
+
