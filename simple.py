@@ -205,3 +205,19 @@ if __name__ == '__main__':
     print "Bayes factor 1/2 :", p_C1C2_given_H1 / p_C1C2_given_H2
     print "Bayes factor 2/1 :", p_C1C2_given_H2 / p_C1C2_given_H1
 
+
+    print
+    print "...and now... the EXACT computation!"
+    from multivariate_polya import multivariate_polya, log_multivariate_polya_vectorized
+
+    def coeff(x):
+        return gamma(x.sum() + 1.0) / gamma(x + 1).prod()
+
+    p_C1C2_given_H1 = np.prod([coeff(C1[i]) * coeff(C2[i]) / coeff(C1[i] + C2[i]) * multivariate_polya(C1[i] + C2[i], alpha) for i in range(n_classes)])
+    p_C1C2_given_H2 = np.prod([multivariate_polya(C1[i], alpha) * multivariate_polya(C2[i], alpha) for i in range(n_classes)])
+
+    print "Exact p(C1,C2 | H1):", p_C1C2_given_H1
+    print "Exact p(C1,C2 | H2):", p_C1C2_given_H2
+    print "Bayes factor 1/2 :", p_C1C2_given_H1 / p_C1C2_given_H2
+    print "Bayes factor 2/1 :", p_C1C2_given_H2 / p_C1C2_given_H1
+
