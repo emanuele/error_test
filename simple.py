@@ -1,3 +1,5 @@
+# -*- coding: iso-8859-15 -*-
+
 import numpy as np
 from numpy.random import multinomial, dirichlet
 from scipy.special import gamma, gammaln
@@ -33,6 +35,22 @@ def log_multinomial_pmf_vectorized(x, p):
     """
     x = np.atleast_2d(x)
     return gammaln(x.sum(1) + 1.0) - gammaln(x + 1.0).sum(1) + (x * log(p)).sum(1)
+
+
+def multivariate_polya(x, alpha):
+    """Multivariate Pólya PDF. Basic implementation.
+    """
+    x = np.atleast_1d(x).flatten()
+    alpha = np.atleast_1d(alpha).flatten()
+    assert(x.size==alpha.size)
+    N = x.sum()
+    A = alpha.sum()
+    likelihood = factorial(N) * gamma(A) / gamma(N + A)
+    # likelihood = gamma(A) / gamma(N + A)
+    for i in range(len(x)):
+        likelihood /= factorial(x[i])
+        likelihood *= gamma(x[i] + alpha[i]) / gamma(alpha[i])
+    return likelihood
 
 
 if __name__ == '__main__':
