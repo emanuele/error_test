@@ -75,22 +75,22 @@ if __name__ == '__main__':
 
 
     # Example 2: C1 and C2 have different patterns
-    # C1 = np.array([[1, 6, 5],
-    #                [1, 9, 5],
-    #                [8, 3, 1]])
-
-    # C2 = np.array([[6, 5, 1],
-    #                [8, 6, 1],
-    #                [2, 4, 6]])
-
-    # Example 3: C1 and C2 have pretty patterns
-    C1 = np.array([[5, 6, 1],
-                   [5, 9, 1],
+    C1 = np.array([[1, 6, 5],
+                   [1, 9, 5],
                    [8, 3, 1]])
 
     C2 = np.array([[6, 5, 1],
                    [8, 6, 1],
-                   [6, 4, 2]])
+                   [2, 4, 6]])
+
+    # Example 3: C1 and C2 have pretty patterns
+    # C1 = np.array([[5, 6, 1],
+    #                [5, 9, 1],
+    #                [8, 3, 1]])
+
+    # C2 = np.array([[6, 5, 1],
+    #                [8, 6, 1],
+    #                [6, 4, 2]])
 
     print "Bayesian test: H1 vs H2"
     print "H1: C1 & C2 off-diagonal elements come from the same distribution."
