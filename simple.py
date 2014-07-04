@@ -9,7 +9,7 @@ def multinomial_pmf(x, p):
 
     See: http://en.wikipedia.org/wiki/Multinomial_distribution#Probability_mass_function
     """
-    return gamma(x.sum() + 1.0) / gamma(x + 1).sum() * (p ** x).prod()
+    return gamma(x.sum() + 1.0) / gamma(x + 1).prod() * (p ** x).prod()
 
 
 def multinomial_pmf_vectorized(x, p):
@@ -17,14 +17,14 @@ def multinomial_pmf_vectorized(x, p):
     likelihood. Naive vectorized implementation.
     """
     x = np.atleast_2d(x)
-    return gamma(x.sum(1) + 1.0) / gamma(x + 1.0).sum(1) * (p ** x).prod(1)
+    return gamma(x.sum(1) + 1.0) / gamma(x + 1.0).prod(1) * (p ** x).prod(1)
     
 
 def log_multinomial_pmf(x, p):
     """Compute the log of the multinomial probability mass function
     (pmf), aka likelihood.
     """
-    return gammaln(x.sum() + 1.0) - logaddexp.reduce(gamma(x + 1.0)) + (x * log(p)).sum()
+    return gammaln(x.sum() + 1.0) - gammaln(x + 1.0).sum() + (x * log(p)).sum()
 
 
 def log_multinomial_pmf_vectorized(x, p):
@@ -32,7 +32,7 @@ def log_multinomial_pmf_vectorized(x, p):
     (pmf), aka likelihood.
     """
     x = np.atleast_2d(x)
-    return gammaln(x.sum(1) + 1.0) - logaddexp.reduce(gammaln(x + 1.0).T) + (x * log(p)).sum(1)
+    return gammaln(x.sum(1) + 1.0) - gammaln(x + 1.0).sum(1) + (x * log(p)).sum(1)
 
 
 if __name__ == '__main__':
