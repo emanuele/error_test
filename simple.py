@@ -4,6 +4,9 @@ import numpy as np
 from numpy.random import multinomial, dirichlet
 from scipy.special import gamma, gammaln
 from numpy import logaddexp, log
+from scipy import factorial
+from inference_with_classifiers.multivariate_polya import multivariate_polya, log_multivariate_polya_vectorized # See https://github.com/emanuele/inference_with_classifiers
+
 
 def multinomial_pmf(x, p):
     """Compute the multinomial probability mass function (pmf), aka
