@@ -1,5 +1,10 @@
 # -*- coding: iso-8859-15 -*-
 
+"""Here we test the similarity of the off-diagonal elements of two
+confusion matrices. Monte Carlo and exact likelihoods are computed, as
+well as the Bayes factor.
+"""
+
 import numpy as np
 from numpy.random import multinomial, dirichlet
 from scipy.special import gamma, gammaln
