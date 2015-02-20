@@ -100,6 +100,23 @@ if __name__ == '__main__':
     #                [8, 6, 1],
     #                [6, 4, 2]])
 
+    C1 = np.array([[69,  22,  16,  23,  38,  11],
+                   [ 3, 124,  10,  23,   7,  14],
+                   [12,   9, 117,  11,  21,  10],
+                   [ 4,  23,   7, 127,   8,  11],
+                   [13,   5,   8,   7, 141,   6],
+                   [ 2,  22,   5,  10,   3, 137]])
+
+    C2 = np.array([[ 2268,     0,   126,   567,  2079,     0],
+                   [  252,  2106,    63,  1467,     0,  1152],
+                   [ 1512,     0,  2142,   756,   315,   315],
+                   [ 1134,   504,   315,  2583,   315,   189],
+                   [ 1953,     0,    63,    63,  2961,     0],
+                   [  126,  1008,   315,  1323,     0,  2268]])
+
+
+
+
     print "Bayesian test: H1 vs H2"
     print "H1: C1 & C2 off-diagonal elements come from the same distribution."
     print "H2: C1 & C2 off-diagonal elements come from two different distributions."
@@ -226,3 +243,15 @@ if __name__ == '__main__':
     print "Bayes factor 1/2 :", p_E1E2_given_H1 / p_E1E2_given_H2
     print "Bayes factor 2/1 :", p_E1E2_given_H2 / p_E1E2_given_H1
 
+    print
+    print "...and now... the EXACT computation in logspace!"
+    def log_coeff(x):
+        return gammaln(x.sum() + 1.0) - gammaln(x + 1).sum()
+
+    log_p_E1E2_given_H1 = np.sum([np.logaddexp(log_coeff(E1[i]) + log_coeff(E2[i]) - log_coeff(E1[i]),  E2[i]) + log_multivariate_polya_vectorized(E1[i] + E2[i], alpha) for i in range(n_classes)])
+    log_p_E1E2_given_H2 = np.sum([log_multivariate_polya_vectorized(E1[i], alpha) + log_multivariate_polya_vectorized(E2[i], alpha) for i in range(n_classes)])
+
+    print "Exact logp(E1,E2 | H1):", log_p_E1E2_given_H1
+    print "Exact logp(E1,E2 | H2):", log_p_E1E2_given_H2
+    print "Bayes factor 1/2 : exp(%s)" % (log_p_E1E2_given_H1 - log_p_E1E2_given_H2)
+    print "Bayes factor 2/1 : exp(%s)" % (log_p_E1E2_given_H2 - log_p_E1E2_given_H1)
